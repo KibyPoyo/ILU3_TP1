@@ -1,0 +1,6 @@
+.metadata/
+.sonarlint/
+bin/
+.settings/
+*.log
+*.lck
