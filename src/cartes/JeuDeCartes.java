@@ -46,7 +46,7 @@ public class JeuDeCartes {
 	        int nbExemplaires = typesDeCartes[i].getNbExemplaires();
 	        Carte carte = typesDeCartes[i].getCarte();
 	        for (int j = 0; j < nbExemplaires; j++) {
-	            cartes[indexCarte] = carte; // TODO Si réutilisé pour piocher une carte unique, faire une copie de la carte (avec instanceOf et Type)
+	            cartes[indexCarte] = carte; // Attention lecture seulement
 	            indexCarte++;
 	        }
 	    }
