@@ -54,10 +54,23 @@ public class JeuDeCartes {
 		return cartes;
 	}
     
-    
-    public static void main(String[] args) {
-    	JeuDeCartes jdc = new JeuDeCartes();
-    	String texte = jdc.affichageJeuDeCartes();
-    	System.out.println(texte);
+    public boolean checkCount() {
+		Carte[] cartes = donnerCartes();
+    	for (Configuration configuration: typesDeCartes) {
+    		int exemplairesReference = configuration.getNbExemplaires();
+    		Carte carteReference = configuration.getCarte();
+    		
+    		int exemplaires = 0;
+			for (Carte carte : cartes) {
+				if (carte.equals(carteReference)) {
+					exemplaires++;
+				}
+			}
+			
+			if (exemplairesReference != exemplaires) {
+				return false;
+			}
+		}
+    	return true;
 	}
 }

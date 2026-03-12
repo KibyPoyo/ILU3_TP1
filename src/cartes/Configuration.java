@@ -9,7 +9,7 @@ public class Configuration{
 		this.nbExemplaires = nbExemplaires;
 		this.carte = carte;
 	}
-
+	
 	public int getNbExemplaires() {
 		return nbExemplaires;
 	}
