@@ -20,7 +20,7 @@ public class MainJoueur implements Iterable<Carte> {
 
 	@Override
 	public String toString() {
-		return "MainJoueur [main=" + main + "]";
+		return main.toString();
 	}
 
 	@Override

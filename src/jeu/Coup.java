@@ -14,6 +14,18 @@ public class Coup {
 		this.joueurCible = joueurCible;
 		this.carteJouee = carteJouee;
 	}
+	
+	public Joueur getJoueurSource() {
+		return joueurSource;
+	}
+
+	public Joueur getJoueurCible() {
+		return joueurCible;
+	}
+
+	public Carte getCarteJouee() {
+		return carteJouee;
+	}
 
 	public boolean estValide() {
 		return joueurCible == null
@@ -21,5 +33,12 @@ public class Coup {
 			|| (joueurCible != joueurSource && (carteJouee instanceof Attaque || carteJouee instanceof Limite));
 	}
 	
+	@Override
+	public String toString() {
+		if (joueurCible == null) {
+			return "defausse la carte " + carteJouee.toString();
+		}
+		return "depose la carte " + carteJouee.toString() + " dans la zone de jeu de " + joueurCible.getNom();
+	}
 	
 }
