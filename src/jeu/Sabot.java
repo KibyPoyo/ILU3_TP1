@@ -80,7 +80,6 @@ public class Sabot implements Iterable<Carte> {
 			nbOperationReference++;
 			indiceIterateur--;
 			nbCartes--;
-			
 		}
 		
 		private void verifierConcurrence() {

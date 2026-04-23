@@ -21,10 +21,12 @@ public class ZoneDeJeu {
 	private Set<Botte> bottes = new HashSet<>();
 
 	public Limite sommetPileLimites() {
+		if (pileLimites.isEmpty()) return null;
 		return pileLimites.get(0);
 	}
 	
 	public Bataille sommetPileBataille() {
+		if (pileBataille.isEmpty()) return null;
 		return pileBataille.get(0);
 	}
 	
@@ -64,25 +66,28 @@ public class ZoneDeJeu {
 	
 	public boolean peutAvancer() {
 		boolean prio = estPrioritaire();
-		if (pileBataille.isEmpty()) {
-			return estPrioritaire();
-		} else {
-			Bataille sommet = sommetPileBataille();
-			if (sommet.equals(Cartes.FEU_VERT)) return true;
-			return prio && (sommet.equals(Cartes.FEU_ROUGE)
-	                 || (sommet instanceof Parade)
-	                 || (sommet instanceof Attaque attaque && possedeBottePour(attaque)));
-		}
+		Bataille sommet = sommetPileBataille();
+
+		if (pileBataille.isEmpty()) return prio;
+		if (sommet.equals(Cartes.FEU_VERT)) return true;
+		if (sommet instanceof Parade) return prio;
+		if (sommet.equals(Cartes.FEU_ROUGE)) return prio;
+		if (sommet instanceof Attaque attaque && possedeBottePour(attaque)) return prio;
+		return false;
 	}
-	
+
 	private boolean estDepotFeuVertAutorise() {
-		return !estPrioritaire()
-				&& (pileBataille.isEmpty() || sommetPileBataille().equals(Cartes.FEU_ROUGE)
-					|| !sommetPileBataille().equals(Cartes.FEU_VERT));
+		return !estPrioritaire() &&
+				  (pileBataille.isEmpty()
+				|| sommetPileBataille().equals(Cartes.FEU_ROUGE)
+				|| (sommetPileBataille() instanceof Parade parade && !parade.equals(Cartes.FEU_VERT))
+				|| (sommetPileBataille() instanceof Attaque attaque && possedeBottePour(attaque)));
 	}
 	
 	private boolean estDepotBorneAutorise(Borne borne) {
-		return peutAvancer() && borne.getKm() <= donnerLimitationVitesse() && donnerKmParcourus() < 1000;
+		return peutAvancer()
+			&& borne.getKm() <= donnerLimitationVitesse()
+			&& (borne.getKm() + donnerKmParcourus()) <= 1000;
 	}
 	
 	private boolean estDepotLimiteAutorise(Limite limite) {
@@ -98,7 +103,8 @@ public class ZoneDeJeu {
 			return peutAvancer();
 		} else if (bataille instanceof Parade) {
 			return (bataille.equals(Cartes.FEU_VERT) && estDepotFeuVertAutorise())
-				|| (!bataille.equals(Cartes.FEU_VERT) && (!pileBataille.isEmpty() && sommetPileBataille().equals(bataille)));
+				|| (!bataille.equals(Cartes.FEU_VERT) && !pileBataille.isEmpty()
+					&& sommetPileBataille() instanceof Attaque sommet && sommet.getType().equals(bataille.getType()));
 		}
 		return false;
 	}

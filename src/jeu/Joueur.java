@@ -102,10 +102,11 @@ public class Joueur {
 	
 	public String afficherEtatJoueur() {
 		StringBuilder etat = new StringBuilder();
-		etat.append("Bottes --> " + zoneDeJeu.toStringBottes());
-		etat.append("\nLimitation de vitesse 50 --> " + (zoneDeJeu.donnerLimitationVitesse() == 50));
-		etat.append("\nSommet de la pile de Bataille --> " + zoneDeJeu.sommetPileBataille());
-		etat.append("\nContenu de la main --> " + main.toString() + "\n");
+		etat.append("Bottes             : " + zoneDeJeu.toStringBottes());
+		etat.append("\nLimitation 50      : " + (zoneDeJeu.donnerLimitationVitesse() == 50));
+		etat.append("\nEtat pile bataille : " + zoneDeJeu.sommetPileBataille());
+		etat.append("\nMain               : " + main.toString());
+		etat.append("\nA parcouru         : " + donnerKmParcourus() + "/1000km\n");
 		return etat.toString();
 	}
 	

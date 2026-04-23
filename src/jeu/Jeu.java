@@ -48,23 +48,22 @@ public class Jeu {
 	    StringBuilder compteRendu = new StringBuilder();
 	    
 	    Carte cartePiochee = joueur.prendreCarte(sabot);
-	    compteRendu.append("Le joueur " + joueur.getNom() + " a pioche " + cartePiochee + "\n");
-	    compteRendu.append("Il a dans sa main : " + joueur.afficherMain() + "\n");
+	    compteRendu.append("C'est au tour du joueur " + joueur.getNom() + "\n");
+	    compteRendu.append("A pioche           : " + cartePiochee + "\n");
+	    compteRendu.append(joueur.afficherEtatJoueur());
 
 	    Coup coup = joueur.choisirCoup(joueurs);
 	    Carte carteJouee = coup.getCarteJouee();
 	    Joueur joueurCible = coup.getJoueurCible();
-	    
 	    if (joueurCible == null) {
-	        sabot.ajouterCarte(carteJouee);
 	        compteRendu.append(joueur.getNom() + " depose la carte " + carteJouee + " dans la defausse\n");
 	    } else {
 	        joueurCible.deposer(carteJouee);
 	        String zone = (joueur.equals(joueurCible)) ? "sa zone de jeu" : "la zone de jeu de " + joueurCible.getNom();
 	        compteRendu.append(joueur.getNom() + " depose la carte " + carteJouee + " dans " + zone + "\n");
 	    }
-
 	    joueur.retirerDeLaMain(carteJouee);
+	    
 	    return compteRendu.toString();
 	}
 	
@@ -77,10 +76,10 @@ public class Jeu {
 	public String lancer() {
 		StringBuilder compteRendu = new StringBuilder();
 		Joueur joueur = null;
-		while (joueur == null || (joueur.donnerKmParcourus() < 1000 && !sabot.estVide())) {
+		do {
 			joueur = donnerJoueurSuivant();
 			compteRendu.append(jouerTour(joueur) + "\n");
-		}
+		} while ((joueur.donnerKmParcourus() < 1000 && !sabot.estVide()));
 		if (joueur.donnerKmParcourus() >= 1000) {
 			compteRendu.append("Victoire de " + joueur.getNom() + " !\n");
 		} else if (sabot.estVide()) {

@@ -2,6 +2,8 @@ package jeu;
 
 import cartes.Attaque;
 import cartes.Carte;
+import cartes.DebutLimite;
+import cartes.FinLimite;
 import cartes.Limite;
 
 public class Coup {
@@ -29,8 +31,8 @@ public class Coup {
 
 	public boolean estValide() {
 		return joueurCible == null
-			|| (joueurCible == joueurSource && !(carteJouee instanceof Attaque || carteJouee instanceof Limite))
-			|| (joueurCible != joueurSource && (carteJouee instanceof Attaque || carteJouee instanceof Limite));
+			|| (joueurCible == joueurSource && !(carteJouee instanceof Attaque || carteJouee instanceof DebutLimite) && joueurSource.estDepotAutorise(carteJouee))
+			|| (joueurCible != joueurSource && (carteJouee instanceof Attaque || carteJouee instanceof DebutLimite) && joueurCible.estDepotAutorise(carteJouee));
 	}
 	
 	@Override
