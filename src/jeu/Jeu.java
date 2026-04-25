@@ -3,9 +3,11 @@ package jeu;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 import cartes.Carte;
 import cartes.JeuDeCartes;
@@ -75,16 +77,45 @@ public class Jeu {
 
 	public String lancer() {
 		StringBuilder compteRendu = new StringBuilder();
-		Joueur joueur = null;
+		Joueur joueurCourant = null;
 		do {
-			joueur = donnerJoueurSuivant();
-			compteRendu.append(jouerTour(joueur) + "\n");
-		} while ((joueur.donnerKmParcourus() < 1000 && !sabot.estVide()));
-		if (joueur.donnerKmParcourus() >= 1000) {
-			compteRendu.append("Victoire de " + joueur.getNom() + " !\n");
+			joueurCourant = donnerJoueurSuivant();
+			compteRendu.append(jouerTour(joueurCourant) + "\n");
+		} while ((joueurCourant.donnerKmParcourus() < 1000 && !sabot.estVide()));
+		
+		List<Joueur> classement = classement();
+		compteRendu.append("Classement final : \n");
+		int rang = 1;
+		for (Joueur joueur : classement) {
+			compteRendu.append("- " + rang);
+			if (rang == 1) compteRendu.append("er ");
+			else compteRendu.append("eme");
+			compteRendu.append(" : " + joueur.getNom() + " avec " + joueur.donnerKmParcourus() + "/1000km\n");
+			rang++;
+		}
+		
+		if (classement.get(0).donnerKmParcourus() >= 1000) {
+			compteRendu.append("Victoire de " + classement.get(0).getNom() + " !\n");
 		} else if (sabot.estVide()) {
-			compteRendu.append("Match nul : le sabot est vide.\n");
+			compteRendu.append("Personne n'a pu finir le parcours : le sabot est vide.\n");
 	    }
 		return compteRendu.toString();
+	}
+	
+	public List<Joueur> classement() {
+		TreeSet<Joueur> treeSet = new TreeSet<>(new Comparator<Joueur>() {
+			@Override
+	        public int compare(Joueur joueur1, Joueur joueur2) {
+				int km1 = joueur1.donnerKmParcourus();
+				int km2 = joueur2.donnerKmParcourus();
+				
+				if (km1 != km2) return Integer.compare(km2, km1);
+				return joueur1.getNom().compareTo(joueur2.getNom());
+			}
+		});
+		
+		treeSet.addAll(joueurs);
+		
+		return new ArrayList<>(treeSet);
 	}
 }

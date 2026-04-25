@@ -1,19 +1,18 @@
 package jeu;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
+import cartes.Botte;
 import cartes.Carte;
+import strategie.Strategie;
 
-public class Joueur {
+public class Joueur implements Comparable<Joueur> {
 	private String nom;
 	private ZoneDeJeu zoneDeJeu;
 	private MainJoueur main = new MainJoueur();
-	private Random random = new Random();
+	private Strategie strategie = new Strategie(){};
 
 	public Joueur(String nom, ZoneDeJeu zoneDeJeu) {
 		this.nom = nom;
@@ -24,6 +23,10 @@ public class Joueur {
 		return nom;
 	}
 	
+	public void setStrategie(Strategie strategie) {
+		this.strategie = strategie;
+	}
+
 	public void donner(Carte carte) {
 		main.prendre(carte);
 	}
@@ -84,19 +87,13 @@ public class Joueur {
 		}
 	}
 	
-	private <T> T choisirValeurAleatoireDansSet(Set<T> set) {
-		List<T> liste = new ArrayList<>(set);
-		int i = random.nextInt(liste.size());
-		return liste.get(i);
-	}
-	
 	public Coup choisirCoup(Set<Joueur> participants) {
 		Set<Coup> setCoupsPossibles = coupsPossibles(participants);
 		if (!setCoupsPossibles.isEmpty()) {
-			return choisirValeurAleatoireDansSet(setCoupsPossibles);
+			return strategie.selectionnerCoup(setCoupsPossibles);
 		} else {
 			Set<Coup> setCoupsDefausse = coupsDefausse();
-			return choisirValeurAleatoireDansSet(setCoupsDefausse);
+			return strategie.selectionnerDefausse(setCoupsDefausse);
 		}
 	}
 	
@@ -104,7 +101,7 @@ public class Joueur {
 		StringBuilder etat = new StringBuilder();
 		etat.append("Bottes             : " + zoneDeJeu.toStringBottes());
 		etat.append("\nLimitation 50      : " + (zoneDeJeu.donnerLimitationVitesse() == 50));
-		etat.append("\nEtat pile bataille : " + zoneDeJeu.sommetPileBataille());
+		etat.append("\nEtat pile bataille : " + donnerSommetPile());
 		etat.append("\nMain               : " + main.toString());
 		etat.append("\nA parcouru         : " + donnerKmParcourus() + "/1000km\n");
 		return etat.toString();
@@ -114,9 +111,26 @@ public class Joueur {
 	    return main.toString();
 	}
 	
+	public Carte donnerSommetPile() {
+		return zoneDeJeu.sommetPileBataille();
+	}
+	
+	public Set<Botte> donnerBottes() {
+		return zoneDeJeu.getBottes();
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		return obj != null && getClass() == obj.getClass() && nom.equals(((Joueur) obj).getNom());
+	}
+	
+	@Override
+	public int compareTo(Joueur joueur) {
+		int differenceKm = Integer.compare(donnerKmParcourus(), joueur.donnerKmParcourus());
+		if (differenceKm != 0) {
+			return differenceKm;
+		}
+		return getNom().compareTo(joueur.getNom());
 	}
 
 	@Override

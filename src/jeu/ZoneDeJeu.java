@@ -20,6 +20,10 @@ public class ZoneDeJeu {
 	private LinkedList<Borne> collecBornes = new LinkedList<>();
 	private Set<Botte> bottes = new HashSet<>();
 
+	public Set<Botte> getBottes() {
+		return bottes;
+	}
+
 	public Limite sommetPileLimites() {
 		if (pileLimites.isEmpty()) return null;
 		return pileLimites.get(0);
